@@ -12,16 +12,13 @@ public static class SwaggerExtensions
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            operation.Parameters =
-            [
-                new OpenApiParameter
+            operation.Parameters.Add(new OpenApiParameter
             {
                 Name = "X-API-Key",
                 In = ParameterLocation.Header,
                 Description = "Custom header for authentication",
                 Required = false,
-            },
-        ];
+            });
         }
     }
 }
