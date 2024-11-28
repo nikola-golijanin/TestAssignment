@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using TestAssignmentApi.Data;
-using TestAssignmentApi.Dtos.User;
+using TestAssignmentApi.Dtos.Users;
 using TestAssignmentApi.Models;
 using TestAssignmentApi.Models.Errors;
 using TestAssignmentApi.Utils;
 
 namespace TestAssignmentApi.Services.Users;
 
-public class UserService : IUserService
+public partial class UserService : IUserService
 {
     private readonly ApplicationDbContext _context;
 
@@ -37,6 +38,20 @@ public class UserService : IUserService
         return Result<User>.Success(newUser);
     }
 
+
+    public async Task<Result<UserDetailsDto>> GetUserByIdAsync(int id)
+    {
+        var user = await _context.Users
+                                .AsNoTracking()
+                                .Where(u => u.Id == id)
+                                .Select(u => new UserDetailsDto(u.Id, u.Username, u.Email, u.FullName, u.PhoneNumber, u.Language, u.Culture))
+                                .FirstOrDefaultAsync();
+        return user is null
+            ? Result<UserDetailsDto>.Failure(UserErrors.NotFound)
+            : Result<UserDetailsDto>.Success(user);
+    }
+
+
     public async Task<Result<bool>> DeleteUserAsync(int id)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -47,19 +62,21 @@ public class UserService : IUserService
         return Result<bool>.Success(true);
     }
 
-    public async Task<Result<User>> GetUserByIdAsync(int id)
+
+    public async Task<Result<User>> UpdateUserAsync(int id, JsonPatchDocument<UserToUpdateDto> patchDoc)
     {
         var user = await _context.Users
-                                .AsNoTracking()
-                                .FirstOrDefaultAsync(u => u.Id == id);
-        return user is null
-            ? Result<User>.Failure(UserErrors.NotFound)
-            : Result<User>.Success(user);
-    }
+                        .FirstOrDefaultAsync(u => u.Id == id);
 
-    public Task UpdateUserAsync(int id, User user)
-    {
-        throw new NotImplementedException();
+        if (user is null)
+            return Result<User>.Failure(UserErrors.NotFound);
+
+        var userToPatch = UserToUpdateDto.FromUser(user);
+        patchDoc.ApplyTo(userToPatch);
+        UserToUpdateDto.MapToUser(userToPatch, user);
+
+        await _context.SaveChangesAsync();
+        return Result<User>.Success(user);
     }
 
     public async Task<Result<bool>> ValidateUserPasswordAsync(int id, string password)

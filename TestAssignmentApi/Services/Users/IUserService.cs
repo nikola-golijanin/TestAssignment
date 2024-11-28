@@ -1,4 +1,5 @@
-﻿using TestAssignmentApi.Dtos.User;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using TestAssignmentApi.Dtos.Users;
 using TestAssignmentApi.Models;
 using TestAssignmentApi.Utils;
 
@@ -8,11 +9,11 @@ public interface IUserService
 {
     Task<Result<User>> CreateUserAsync(CreateNewUserDto user);
 
-    Task<Result<User>> GetUserByIdAsync(int id);
+    Task<Result<UserDetailsDto>> GetUserByIdAsync(int id);
 
     Task<Result<bool>> DeleteUserAsync(int id);
 
-    Task UpdateUserAsync(int id, User user);
+    Task<Result<User>> UpdateUserAsync(int id, JsonPatchDocument<UserToUpdateDto> patchDoc);
 
     Task<Result<bool>> ValidateUserPasswordAsync(int id, string password);
 }

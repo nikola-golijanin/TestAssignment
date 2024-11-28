@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TestAssignmentApi.Dtos.User;
+namespace TestAssignmentApi.Dtos.Users;
 
 public record CreateNewUserDto(
     [Required] string Username,

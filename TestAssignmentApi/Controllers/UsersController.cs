@@ -1,5 +1,6 @@
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using TestAssignmentApi.Dtos.User;
+using TestAssignmentApi.Dtos.Users;
 using TestAssignmentApi.Filters;
 using TestAssignmentApi.Services.Users;
 
@@ -17,7 +18,7 @@ namespace TestAssignmentApi.Controllers
 
         public UsersController(
             ILogger<UsersController> logger,
-            IUserService userService)
+            IUserService userService) : base(logger)
         {
             _logger = logger;
             _userService = userService;
@@ -29,10 +30,7 @@ namespace TestAssignmentApi.Controllers
             var result = await _userService.GetUserByIdAsync(id);
 
             if (result.IsFailure)
-            {
-                _logger.LogError("Error: {Error}", result.Error.Description);
-                return NotFound();
-            }
+                return ResolveErrors(error: result.Error);
 
             return Ok(result.Value);
         }
@@ -51,10 +49,7 @@ namespace TestAssignmentApi.Controllers
             var result = await _userService.DeleteUserAsync(id);
 
             if (result.IsFailure)
-            {
-                _logger.LogError("{Error}", result.Error.Description);
                 return ResolveErrors(error: result.Error);
-            }
 
             return Ok(result.Value);
         }
@@ -63,12 +58,24 @@ namespace TestAssignmentApi.Controllers
         public async Task<IActionResult> VerifyUserPasswordAsync(int id, [FromBody] string password)
         {
             var result = await _userService.ValidateUserPasswordAsync(id, password);
+
             if (result.IsFailure)
-            {
-                _logger.LogError("{Error}", result.Error.Description);
                 return ResolveErrors(error: result.Error);
-            }
+
             return Ok(result.Value);
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] JsonPatchDocument<UserToUpdateDto> patchDoc)
+        {
+            if (patchDoc is null)
+                return BadRequest("patchDoc object sent from client is null.");
+
+            var result = await _userService.UpdateUserAsync(id, patchDoc);
+            if (result.IsFailure)
+                return ResolveErrors(result.Error);
+
+            return NoContent();
         }
     }
 }
