@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using TestAssignmentApi.Extensions;
+using TestAssignmentApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.Configure<ApiBehaviorOptions>(ApiBehaviorOptions =>
 {
     ApiBehaviorOptions.SuppressModelStateInvalidFilter = true;
 });
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 
 var app = builder.Build();
 
@@ -29,6 +32,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseExceptionHandler(opt => { });
 
 app.UseHttpsRedirection();
 

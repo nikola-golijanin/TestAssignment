@@ -31,6 +31,7 @@ namespace TestAssignmentApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNewClient([FromBody] CreateNewClientDto newClient)
         {
+
             if (ModelState.IsValid)
                 return ResolveErrors(ModelState);
 
