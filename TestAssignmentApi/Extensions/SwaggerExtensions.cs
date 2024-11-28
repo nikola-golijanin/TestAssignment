@@ -19,7 +19,7 @@ public static class SwaggerExtensions
                 Name = "X-API-Key",
                 In = ParameterLocation.Header,
                 Description = "Custom header for authentication",
-                Required = true,
+                Required = false,
             },
         ];
         }

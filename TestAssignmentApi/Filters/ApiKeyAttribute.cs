@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
-using TestAssignmentApi.Options;
+using TestAssignmentApi.Data;
 
 namespace TestAssignmentApi.Filters;
 
@@ -23,11 +22,11 @@ public class ApiKeyAttribute : Attribute, IAuthorizationFilter
         string? apiKey = context.Request.Headers[ApiKeyHeaderName];
         if (string.IsNullOrWhiteSpace(apiKey)) return false;
 
-        var clients = context.RequestServices
-                        .GetRequiredService<IOptions<ClientsOptions>>()
-                        .Value
-                        .Clients;
+        var dbContext = context.RequestServices
+                        .GetRequiredService<ApplicationDbContext>();
 
-        return clients.Any(c => c.ApiKey == apiKey);
+        var apiKeyGuid = Guid.Parse(apiKey);
+        return dbContext.Clients
+            .Any(c => c.ApiKey == apiKeyGuid);
     }
 }
