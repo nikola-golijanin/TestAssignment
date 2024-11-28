@@ -6,7 +6,11 @@ namespace TestAssignmentApi.Extensions;
 public static class SwaggerExtensions
 {
     public static void RegisterSwaggerUI(this IServiceCollection services) =>
-        services.AddSwaggerGen(c => c.OperationFilter<CustomHeaderParameter>());
+        services.AddSwaggerGen(c =>
+        {
+            c.OperationFilter<CustomHeaderParameter>();
+            c.EnableAnnotations();
+        });
 
     public class CustomHeaderParameter : IOperationFilter
     {

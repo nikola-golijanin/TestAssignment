@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using TestAssignmentApi.Dtos.Users;
 using TestAssignmentApi.Filters;
 using TestAssignmentApi.Services.Users;
@@ -25,6 +26,9 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = nameof(GetUserAsync))]
+        [SwaggerOperation(Summary = "Get a user by ID", Description = "Retrieves a user by their unique ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "User retrieved successfully", typeof(UserDetailsDto))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
         public async Task<IActionResult> GetUserAsync(int id)
         {
             var result = await _userService.GetUserByIdAsync(id);
@@ -36,6 +40,9 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a new user", Description = "Creates a new user with the provided details.")]
+        [SwaggerResponse(StatusCodes.Status201Created, "User created successfully")]
+        [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid user data")]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateNewUserDto newUser)
         {
             if (!ModelState.IsValid)
@@ -47,6 +54,9 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [SwaggerOperation(Summary = "Delete a user", Description = "Deletes a user by their unique ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "User deleted successfully")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
         public async Task<IActionResult> DeleteUserAsync(int id)
         {
             var result = await _userService.DeleteUserAsync(id);
@@ -58,6 +68,9 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost("{id:int}/verify-password")]
+        [SwaggerOperation(Summary = "Verify user password", Description = "Verifies the password of a user by their unique ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Password verified successfully. True for valid, false for invalid")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid password data")]
         public async Task<IActionResult> VerifyUserPasswordAsync(int id, VerifyPasswordDto passwordDto)
         {
             if (!ModelState.IsValid)
@@ -72,6 +85,9 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPatch("{id:int}")]
+        [SwaggerOperation(Summary = "Update a user", Description = "Updates a user with the provided patch document.")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "User updated successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid patch document")]
         public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] JsonPatchDocument<UserToUpdateDto> patchDoc)
         {
             if (patchDoc is null)

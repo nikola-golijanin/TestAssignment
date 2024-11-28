@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using TestAssignmentApi.Dtos;
 using TestAssignmentApi.Models;
 using TestAssignmentApi.Services.Clients;
@@ -22,6 +23,8 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all clients", Description = "Retrieves all clients.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Clients retrieved successfully", typeof(List<Client>))]
         public async Task<IActionResult> GetAllClients()
         {
             var clients = await _clientService.GetClientsAsync();
@@ -29,6 +32,9 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a new client", Description = "Creates a new client with the provided details.")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "Client created successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid client data")]
         public async Task<IActionResult> CreateNewClient([FromBody] CreateNewClientDto newClient)
         {
 

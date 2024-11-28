@@ -6,8 +6,10 @@ using TestAssignmentApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//TODO: Add unit tests, creat postman collection
 
+
+// Add services to the container.
 builder.Services.AddControllers(options =>
 {
     options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
@@ -42,7 +44,7 @@ app.MapControllers();
 
 app.Run();
 
-NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
+static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
     new ServiceCollection()
     .AddLogging()
     .AddMvc()
