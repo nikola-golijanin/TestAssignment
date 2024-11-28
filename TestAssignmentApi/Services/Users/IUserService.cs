@@ -6,7 +6,7 @@ namespace TestAssignmentApi.Services.Users;
 
 public interface IUserService
 {
-    Task CreateUserAsync(CreateNewUserDto user);
+    Task<Result<User>> CreateUserAsync(CreateNewUserDto user);
 
     Task<Result<User>> GetUserByIdAsync(int id);
 
@@ -14,5 +14,5 @@ public interface IUserService
 
     Task UpdateUserAsync(int id, User user);
 
-    Task<bool> ValidateUserPasswordAsync(int id, string password);
+    Task<Result<bool>> ValidateUserPasswordAsync(int id, string password);
 }

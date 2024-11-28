@@ -7,7 +7,7 @@ public record CreateNewUserDto(
     [Required] string Password,
     [Required][EmailAddress] string Email,
     [Required] string FullName,
-    [Required] string MobilePhone,
+    [Required] string PhoneNumber,
     [Required] string Language,
     [Required] string Culture)
 {

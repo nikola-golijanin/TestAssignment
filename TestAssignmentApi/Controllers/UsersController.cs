@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using TestAssignmentApi.Dtos.User;
+using TestAssignmentApi.Filters;
 using TestAssignmentApi.Services.Users;
-using TestAssignmentApi.Utils;
 
 namespace TestAssignmentApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[ApiKey]
-    public class UsersController : ControllerBase
+    [ApiKey]
+    public class UsersController : BaseController
     {
 
         private readonly ILogger<UsersController> _logger;
@@ -23,7 +23,7 @@ namespace TestAssignmentApi.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = nameof(GetUserAsync))]
         public async Task<IActionResult> GetUserAsync(int id)
         {
             var result = await _userService.GetUserByIdAsync(id);
@@ -40,9 +40,9 @@ namespace TestAssignmentApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateNewUserDto newUser)
         {
-            await _userService.CreateUserAsync(newUser);
-            //return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user);
-            return Ok();
+            var result = await _userService.CreateUserAsync(newUser);
+            var user = result.Value;
+            return CreatedAtRoute(nameof(GetUserAsync), new { id = user.Id }, user);
         }
 
         [HttpDelete("{id:int}")]
@@ -59,13 +59,16 @@ namespace TestAssignmentApi.Controllers
             return Ok(result.Value);
         }
 
-
-        private IActionResult ResolveErrors(Error error) =>
-            error switch
+        [HttpPost("{id:int}/verify-password")]
+        public async Task<IActionResult> VerifyUserPasswordAsync(int id, [FromBody] string password)
+        {
+            var result = await _userService.ValidateUserPasswordAsync(id, password);
+            if (result.IsFailure)
             {
-                _ when error.StatusCode == 404 => NotFound(error.Description),
-                _ => StatusCode(500)
-            };
+                _logger.LogError("{Error}", result.Error.Description);
+                return ResolveErrors(error: result.Error);
+            }
+            return Ok(result.Value);
+        }
     }
-
 }

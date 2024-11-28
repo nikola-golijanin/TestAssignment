@@ -16,9 +16,25 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public Task CreateUserAsync(CreateNewUserDto user)
+    public async Task<Result<User>> CreateUserAsync(CreateNewUserDto user)
     {
-        throw new NotImplementedException();
+        (string passwordHash, string salt) = PasswordManager.HashPassword(user.Password);
+
+        var newUser = new User
+        {
+            Username = user.Username,
+            PasswordHash = passwordHash,
+            Email = user.Email,
+            FullName = user.FullName,
+            PhoneNumber = user.PhoneNumber,
+            Language = user.Language,
+            Culture = user.Culture,
+            PasswordSalt = salt
+        };
+
+        _context.Users.Add(newUser);
+        await _context.SaveChangesAsync();
+        return Result<User>.Success(newUser);
     }
 
     public async Task<Result<bool>> DeleteUserAsync(int id)
@@ -46,8 +62,18 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<bool> ValidateUserPasswordAsync(int id, string password)
+    public async Task<Result<bool>> ValidateUserPasswordAsync(int id, string password)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user is null)
+            return Result<bool>.Failure(UserErrors.NotFound);
+
+        var isPasswordValid = PasswordManager.VerifyPassword(password, user.PasswordHash, user.PasswordSalt);
+        return isPasswordValid
+            ? Result<bool>.Success(true)
+            : Result<bool>.Success(false);
     }
 }
