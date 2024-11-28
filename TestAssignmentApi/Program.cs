@@ -16,6 +16,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegisterSwaggerUI();
 builder.Services.RegisterDbContext(configuration: builder.Configuration);
 builder.Services.RegisterApplicationServices();
+builder.Services.Configure<ApiBehaviorOptions>(ApiBehaviorOptions =>
+{
+    ApiBehaviorOptions.SuppressModelStateInvalidFilter = true;
+});
 
 var app = builder.Build();
 

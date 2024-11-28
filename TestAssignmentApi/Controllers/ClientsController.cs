@@ -7,7 +7,7 @@ namespace TestAssignmentApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ClientsController : ControllerBase
+    public class ClientsController : BaseController
     {
         private readonly ILogger<ClientsController> _logger;
 
@@ -15,7 +15,7 @@ namespace TestAssignmentApi.Controllers
 
         public ClientsController(
             ILogger<ClientsController> logger,
-            IClientService clientService)
+            IClientService clientService) : base(logger)
         {
             _logger = logger;
             _clientService = clientService;
@@ -31,6 +31,9 @@ namespace TestAssignmentApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNewClient([FromBody] CreateNewClientDto newClient)
         {
+            if (ModelState.IsValid)
+                return ResolveErrors(ModelState);
+
             var client = new Client
             {
                 Name = newClient.ClientName,

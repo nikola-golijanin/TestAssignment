@@ -38,6 +38,9 @@ namespace TestAssignmentApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateNewUserDto newUser)
         {
+            if (!ModelState.IsValid)
+                return ResolveErrors(ModelState);
+
             var result = await _userService.CreateUserAsync(newUser);
             var user = result.Value;
             return CreatedAtRoute(nameof(GetUserAsync), new { id = user.Id }, user);
@@ -55,9 +58,12 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost("{id:int}/verify-password")]
-        public async Task<IActionResult> VerifyUserPasswordAsync(int id, [FromBody] string password)
+        public async Task<IActionResult> VerifyUserPasswordAsync(int id, VerifyPasswordDto passwordDto)
         {
-            var result = await _userService.ValidateUserPasswordAsync(id, password);
+            if (!ModelState.IsValid)
+                return ResolveErrors(ModelState);
+
+            var result = await _userService.ValidateUserPasswordAsync(id, passwordDto.Password);
 
             if (result.IsFailure)
                 return ResolveErrors(error: result.Error);
