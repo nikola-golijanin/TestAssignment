@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Options;
 using TestAssignmentApi.Extensions;
 using TestAssignmentApi.Filters;
 
@@ -12,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers(options =>
 {
-    options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+    options.InputFormatters.Insert(0, JasonPatchInputFormatter.GetJsonPatchInputFormatter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,12 +42,3 @@ app.MapControllers();
 
 app.Run();
 
-static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
-    new ServiceCollection()
-    .AddLogging()
-    .AddMvc()
-    .AddNewtonsoftJson()
-    .Services
-    .BuildServiceProvider()
-    .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
-    .OfType<NewtonsoftJsonPatchInputFormatter>().First();
