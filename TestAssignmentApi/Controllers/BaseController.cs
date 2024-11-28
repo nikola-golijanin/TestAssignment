@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Net;
 using TestAssignmentApi.Utils;
 
 namespace TestAssignmentApi.Controllers;
@@ -19,10 +20,19 @@ public class BaseController : ControllerBase
 
         return error switch
         {
-            _ when error.StatusCode == 404 => NotFound(error.Description),
-            _ when error.StatusCode == 400 => BadRequest(error.Description),
-            _ => StatusCode(500)
+            _ when error.StatusCode == 404 => NotFound(ToProblemDetails(error)),
+            _ when error.StatusCode == 400 => BadRequest(ToProblemDetails(error)),
+            _ => StatusCode(((int)HttpStatusCode.InternalServerError))
         };
+
+        static ProblemDetails ToProblemDetails(Error error) =>
+            new()
+            {
+                Status = error.StatusCode,
+                Type = error.Code,
+                Title = error.Code,
+                Detail = error.Description
+            };
     }
 
     protected IActionResult ResolveErrors(ModelStateDictionary modelState)

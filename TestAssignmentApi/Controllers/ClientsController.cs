@@ -32,7 +32,7 @@ namespace TestAssignmentApi.Controllers
         public async Task<IActionResult> CreateNewClient([FromBody] CreateNewClientDto newClient)
         {
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return ResolveErrors(ModelState);
 
             var client = new Client
