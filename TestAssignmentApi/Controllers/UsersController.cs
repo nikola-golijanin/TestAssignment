@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TestAssignmentApi.Dtos.Users;
@@ -84,16 +83,17 @@ namespace TestAssignmentApi.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPatch("{id:int}")]
-        [SwaggerOperation(Summary = "Update a user", Description = "Updates a user with the provided patch document.")]
+        [HttpPut("{id:int}")]
+        [SwaggerOperation(Summary = "Update a user", Description = "Updates a user.")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "User updated successfully")]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid patch document")]
-        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] JsonPatchDocument<UserToUpdateDto> patchDoc)
+        [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid users document")]
+        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserToUpdateDto userToUpdate)
         {
-            if (patchDoc is null)
-                return BadRequest("patchDoc object sent from client is null.");
+            if (!ModelState.IsValid)
+                return ResolveErrors(ModelState);
 
-            var result = await _userService.UpdateUserAsync(id, patchDoc);
+            var result = await _userService.UpdateUserAsync(id, userToUpdate);
+
             if (result.IsFailure)
                 return ResolveErrors(result.Error);
 

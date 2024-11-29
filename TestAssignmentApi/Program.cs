@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers(options =>
 {
-    options.InputFormatters.Insert(0, JasonPatchInputFormatter.GetJsonPatchInputFormatter());
+    options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
 });
 
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>

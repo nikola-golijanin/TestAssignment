@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TestAssignmentApi.Data;
 using TestAssignmentApi.Dtos.Users;
 using TestAssignmentApi.Models;
@@ -63,7 +62,7 @@ public partial class UserService : IUserService
     }
 
 
-    public async Task<Result<User>> UpdateUserAsync(int id, JsonPatchDocument<UserToUpdateDto> patchDoc)
+    public async Task<Result<User>> UpdateUserAsync(int id, UserToUpdateDto userToUpdate)
     {
         var user = await _context.Users
                         .FirstOrDefaultAsync(u => u.Id == id);
@@ -71,9 +70,7 @@ public partial class UserService : IUserService
         if (user is null)
             return Result<User>.Failure(UserErrors.NotFound);
 
-        var userToPatch = UserToUpdateDto.FromUser(user);
-        patchDoc.ApplyTo(userToPatch);
-        UserToUpdateDto.MapToUser(userToPatch, user);
+        UserToUpdateDto.MapToUser(userToUpdate, user);
 
         await _context.SaveChangesAsync();
         return Result<User>.Success(user);

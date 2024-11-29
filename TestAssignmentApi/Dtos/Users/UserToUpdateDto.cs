@@ -1,27 +1,16 @@
-﻿using TestAssignmentApi.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using TestAssignmentApi.Models;
 
 namespace TestAssignmentApi.Dtos.Users;
 
 public record UserToUpdateDto(
-    string Username,
-    string Email,
-    string FullName,
-    string PhoneNumber,
-    string Language,
-    string Culture)
+    [Required] string Username,
+    [EmailAddress] string Email,
+    [Required] string FullName,
+    [Required] string PhoneNumber,
+    [Required] string Language,
+    [Required] string Culture)
 {
-    public static UserToUpdateDto FromUser(User user)
-    {
-        return new UserToUpdateDto(
-            Username: user.Username,
-            Email: user.Email,
-            FullName: user.FullName,
-            PhoneNumber: user.PhoneNumber,
-            Language: user.Language,
-            Culture: user.Culture
-        );
-    }
-
     public static void MapToUser(UserToUpdateDto userToPatch, User user)
     {
         user.Username = userToPatch.Username;

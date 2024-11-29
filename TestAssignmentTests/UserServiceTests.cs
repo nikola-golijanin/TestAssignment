@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TestAssignmentApi.Data;
 using TestAssignmentApi.Dtos.Users;
 using TestAssignmentApi.Models;
@@ -146,15 +145,23 @@ public class UserServiceTests
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        var patchDoc = new JsonPatchDocument<UserToUpdateDto>();
-        patchDoc.Replace(u => u.Email, "newemail@example.com");
+        var userToUpdate = new UserToUpdateDto
+        (
+            Username: "testuser2",
+            Email: "testuser2@example.com",
+            FullName: "Test User2",
+            PhoneNumber: "12345",
+            Language: "en",
+            Culture: "US"
+        );
+
 
         // Act
-        var result = await _userService.UpdateUserAsync(user.Id, patchDoc);
+        var result = await _userService.UpdateUserAsync(user.Id, userToUpdate);
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal("newemail@example.com", user.Email);
+        Assert.Equal(userToUpdate.Email, user.Email);
     }
 
     [Fact]

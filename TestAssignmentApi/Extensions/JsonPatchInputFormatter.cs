@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace TestAssignmentApi.Extensions;
 
-public class JasonPatchInputFormatter
+public class JsonPatchInputFormatter
 {
     public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
         new ServiceCollection()

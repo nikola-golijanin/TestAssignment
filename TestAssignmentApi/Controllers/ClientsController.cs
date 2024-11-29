@@ -31,6 +31,20 @@ namespace TestAssignmentApi.Controllers
             return Ok(clients);
         }
 
+        [HttpGet("{id:int}", Name = nameof(GetClientAsync))]
+        [SwaggerOperation(Summary = "Get a client by ID", Description = "Retrieves a client by their unique ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Client retrieved successfully", typeof(Client))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Client not found")]
+        public async Task<IActionResult> GetClientAsync(int id)
+        {
+            var result = await _clientService.GetClientByIdAsync(id);
+
+            if (result.IsFailure)
+                return ResolveErrors(error: result.Error);
+
+            return Ok(result.Value);
+        }
+
         [HttpPost]
         [SwaggerOperation(Summary = "Create a new client", Description = "Creates a new client with the provided details.")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Client created successfully")]
@@ -49,7 +63,7 @@ namespace TestAssignmentApi.Controllers
 
             await _clientService.CreateClientAsync(client);
             _logger.LogInformation("New client created successfully");
-            return NoContent();
+            return CreatedAtRoute(nameof(GetClientAsync), new { id = client.Id }, client);
         }
     }
 }
