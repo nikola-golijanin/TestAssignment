@@ -54,6 +54,18 @@ git clone https://github.com/your-repo/TestAssignmentApi.git cd TestAssignmentAp
 
 The application uses Swagger for API documentation. Once the application is running, you can access the Swagger UI at `https://localhost:5001/swagger`.
 
+## Postman Collection
+
+A Postman collection named `TestAssignmentAPI.postman_collection` exists and can be imported into Postman for testing the API. This collection includes various requests to help you interact with and test the endpoints of the TestAssignmentApi.
+
+To import the collection into Postman:
+1. Open Postman.
+2. Click on the `Import` button.
+3. Select the `TestAssignmentAPI.postman_collection` file.
+4. Click `Open` to import the collection.
+
+You can now use the imported collection to test the API endpoints.
+
 ## Troubleshooting
 
 If you encounter any issues, ensure that your PostgreSQL server is running and that the connection string in `appsettings.json` is correct.
