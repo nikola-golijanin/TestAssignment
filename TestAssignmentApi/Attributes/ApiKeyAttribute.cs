@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using TestAssignmentApi.Data;
 
-namespace TestAssignmentApi.Filters;
+namespace TestAssignmentApi.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class ApiKeyAttribute : Attribute, IAuthorizationFilter

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Net;
 using TestAssignmentApi.Utils;
 
@@ -33,13 +32,5 @@ public class BaseController : ControllerBase
                 Title = error.Code,
                 Detail = error.Description
             };
-    }
-
-    protected IActionResult ResolveErrors(ModelStateDictionary modelState)
-    {
-        foreach (var error in modelState.Values.SelectMany(value => value.Errors))
-            _logger.LogError("{Error}", error.ErrorMessage);
-
-        return UnprocessableEntity(ModelState);
     }
 }

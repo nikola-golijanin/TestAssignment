@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using TestAssignmentApi.Attributes;
 using TestAssignmentApi.Dtos.Users;
-using TestAssignmentApi.Filters;
 using TestAssignmentApi.Services.Users;
 
 namespace TestAssignmentApi.Controllers
@@ -39,14 +39,12 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         [SwaggerOperation(Summary = "Create a new user", Description = "Creates a new user with the provided details.")]
         [SwaggerResponse(StatusCodes.Status201Created, "User created successfully")]
         [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid user data")]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateNewUserDto newUser)
         {
-            if (!ModelState.IsValid)
-                return ResolveErrors(ModelState);
-
             var result = await _userService.CreateUserAsync(newUser);
             var user = result.Value;
             return CreatedAtRoute(nameof(GetUserAsync), new { id = user.Id }, user);
@@ -67,14 +65,12 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost("{id:int}/verify-password")]
+        [ValidateModel]
         [SwaggerOperation(Summary = "Verify user password", Description = "Verifies the password of a user by their unique ID.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Password verified successfully. True for valid, false for invalid")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid password data")]
-        public async Task<IActionResult> VerifyUserPasswordAsync(int id, VerifyPasswordDto passwordDto)
+        public async Task<IActionResult> VerifyUserPasswordAsync(int id, [FromBody] VerifyPasswordDto passwordDto)
         {
-            if (!ModelState.IsValid)
-                return ResolveErrors(ModelState);
-
             var result = await _userService.ValidateUserPasswordAsync(id, passwordDto.Password);
 
             if (result.IsFailure)
@@ -84,14 +80,12 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [ValidateModel]
         [SwaggerOperation(Summary = "Update a user", Description = "Updates a user.")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "User updated successfully")]
         [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid users document")]
         public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserToUpdateDto userToUpdate)
         {
-            if (!ModelState.IsValid)
-                return ResolveErrors(ModelState);
-
             var result = await _userService.UpdateUserAsync(id, userToUpdate);
 
             if (result.IsFailure)
@@ -101,15 +95,13 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPut("{id:int}/update-password")]
+        [ValidateModel]
         [SwaggerOperation(Summary = "Update user password", Description = "Updates the password of a user by their unique ID.")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Password updated successfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid password data")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
         public async Task<IActionResult> UpdateUserPasswordAsync(int id, [FromBody] UpdatePasswordDto updatePasswordDto)
         {
-            if (!ModelState.IsValid)
-                return ResolveErrors(ModelState);
-
             var result = await _userService.UpdateUserPasswordAsync(id, updatePasswordDto);
 
             if (result.IsFailure)

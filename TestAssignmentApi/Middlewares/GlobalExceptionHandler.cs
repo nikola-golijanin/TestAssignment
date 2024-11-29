@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace TestAssignmentApi.Filters;
+namespace TestAssignmentApi.Middlewares;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {

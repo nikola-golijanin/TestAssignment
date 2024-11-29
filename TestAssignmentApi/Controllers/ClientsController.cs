@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using TestAssignmentApi.Attributes;
 using TestAssignmentApi.Dtos;
 using TestAssignmentApi.Models;
 using TestAssignmentApi.Services.Clients;
@@ -46,15 +47,12 @@ namespace TestAssignmentApi.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         [SwaggerOperation(Summary = "Create a new client", Description = "Creates a new client with the provided details.")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Client created successfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid client data")]
         public async Task<IActionResult> CreateNewClient([FromBody] CreateNewClientDto newClient)
         {
-
-            if (!ModelState.IsValid)
-                return ResolveErrors(ModelState);
-
             var client = new Client
             {
                 Name = newClient.ClientName,

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using TestAssignmentApi.Extensions;
-using TestAssignmentApi.Filters;
+using TestAssignmentApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 

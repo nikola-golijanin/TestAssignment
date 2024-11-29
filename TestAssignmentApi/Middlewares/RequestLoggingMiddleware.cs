@@ -1,4 +1,4 @@
-﻿namespace TestAssignmentApi.Filters;
+﻿namespace TestAssignmentApi.Middlewares;
 
 public class RequestLoggingMiddleware
 {
