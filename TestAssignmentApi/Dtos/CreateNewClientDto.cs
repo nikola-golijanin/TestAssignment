@@ -2,4 +2,4 @@
 
 namespace TestAssignmentApi.Dtos;
 
-public record CreateNewClientDto([Required] string ClientName) { };
+public record CreateNewClientDto([Required] string ClientName);

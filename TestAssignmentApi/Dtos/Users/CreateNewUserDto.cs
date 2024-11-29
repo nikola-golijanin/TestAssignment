@@ -9,6 +9,4 @@ public record CreateNewUserDto(
     [Required] string FullName,
     [Required] string PhoneNumber,
     [Required] string Language,
-    [Required] string Culture)
-{
-}
+    [Required] string Culture);

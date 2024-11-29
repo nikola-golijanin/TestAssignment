@@ -64,7 +64,7 @@ namespace TestAssignmentApi.Controllers
             if (result.IsFailure)
                 return ResolveErrors(error: result.Error);
 
-            return Ok(result.Value);
+            return NoContent();
         }
 
         [HttpPost("{id:int}/verify-password")]
@@ -94,6 +94,24 @@ namespace TestAssignmentApi.Controllers
                 return BadRequest("patchDoc object sent from client is null.");
 
             var result = await _userService.UpdateUserAsync(id, patchDoc);
+            if (result.IsFailure)
+                return ResolveErrors(result.Error);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id:int}/update-password")]
+        [SwaggerOperation(Summary = "Update user password", Description = "Updates the password of a user by their unique ID.")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "Password updated successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid password data")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
+        public async Task<IActionResult> UpdateUserPasswordAsync(int id, [FromBody] UpdatePasswordDto updatePasswordDto)
+        {
+            if (!ModelState.IsValid)
+                return ResolveErrors(ModelState);
+
+            var result = await _userService.UpdateUserPasswordAsync(id, updatePasswordDto);
+
             if (result.IsFailure)
                 return ResolveErrors(result.Error);
 

@@ -10,7 +10,6 @@ public record UserToUpdateDto(
     string Language,
     string Culture)
 {
-
     public static UserToUpdateDto FromUser(User user)
     {
         return new UserToUpdateDto(

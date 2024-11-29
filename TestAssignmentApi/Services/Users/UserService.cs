@@ -17,7 +17,7 @@ public partial class UserService : IUserService
         _context = context;
     }
 
-    public async Task<Result<User>> CreateUserAsync(CreateNewUserDto user)
+    public async Task<Result<UserDetailsDto>> CreateUserAsync(CreateNewUserDto user)
     {
         (string passwordHash, string salt) = PasswordManager.HashPassword(user.Password);
 
@@ -35,7 +35,7 @@ public partial class UserService : IUserService
 
         _context.Users.Add(newUser);
         await _context.SaveChangesAsync();
-        return Result<User>.Success(newUser);
+        return Result<UserDetailsDto>.Success(UserDetailsDto.FromUser(newUser));
     }
 
 
@@ -92,5 +92,26 @@ public partial class UserService : IUserService
         return isPasswordValid
             ? Result<bool>.Success(true)
             : Result<bool>.Success(false);
+    }
+
+    public async Task<Result<bool>> UpdateUserPasswordAsync(int id, UpdatePasswordDto updatePasswordDto)
+    {
+        var user = await _context.Users
+                                    .Where(u => u.Id == id)
+                                    .FirstOrDefaultAsync();
+
+        if (user is null)
+            return Result<bool>.Failure(UserErrors.NotFound);
+
+        var isCurrentPasswordValid = PasswordManager.VerifyPassword(updatePasswordDto.CurrentPassword, user.PasswordHash, user.PasswordSalt);
+        if (!isCurrentPasswordValid)
+            return Result<bool>.Failure(UserErrors.InvalidPassword);
+
+        (string newPasswordHash, string newSalt) = PasswordManager.HashPassword(updatePasswordDto.NewPassword);
+        user.PasswordHash = newPasswordHash;
+        user.PasswordSalt = newSalt;
+
+        await _context.SaveChangesAsync();
+        return Result<bool>.Success(true);
     }
 }

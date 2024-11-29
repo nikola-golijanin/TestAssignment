@@ -2,4 +2,4 @@
 
 namespace TestAssignmentApi.Dtos.Users;
 
-public record VerifyPasswordDto([Required] string Password) { }
+public record VerifyPasswordDto([Required] string Password);

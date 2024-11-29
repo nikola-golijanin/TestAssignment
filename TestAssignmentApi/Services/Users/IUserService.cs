@@ -7,7 +7,7 @@ namespace TestAssignmentApi.Services.Users;
 
 public interface IUserService
 {
-    Task<Result<User>> CreateUserAsync(CreateNewUserDto user);
+    Task<Result<UserDetailsDto>> CreateUserAsync(CreateNewUserDto user);
 
     Task<Result<UserDetailsDto>> GetUserByIdAsync(int id);
 
@@ -16,4 +16,6 @@ public interface IUserService
     Task<Result<User>> UpdateUserAsync(int id, JsonPatchDocument<UserToUpdateDto> patchDoc);
 
     Task<Result<bool>> ValidateUserPasswordAsync(int id, string password);
+
+    Task<Result<bool>> UpdateUserPasswordAsync(int id, UpdatePasswordDto updatePasswordDto);
 }
