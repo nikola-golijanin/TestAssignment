@@ -6,10 +6,7 @@ using TestAssignmentApi.Filters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(options =>
-{
-    options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
-});
+builder.Services.AddControllers();
 
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
                             loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
