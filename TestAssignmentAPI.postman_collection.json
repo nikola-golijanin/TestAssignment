@@ -66,6 +66,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get client",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								"3"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -100,7 +118,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"testUsername\",\n  \"password\": \"testPassword\",\n  \"email\": \"test@email.com\",\n  \"fullName\": \"test fullname\",\n  \"phoneNumber\": \"1234567\",\n  \"language\": \"eng\",\n  \"culture\": \"eng\"\n}",
+							"raw": "{\n  \"username\": \"testUsername\",\n  \"password\": \"testPassword\",\n  \"email\": \"test@test.com\",\n  \"fullName\": \"test fullname\",\n  \"phoneNumber\": \"123456\",\n  \"language\": \"eng\",\n  \"culture\": \"eng\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -174,7 +192,7 @@
 						}
 					],
 					"request": {
-						"method": "PATCH",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "X-API-Key",
@@ -184,12 +202,13 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json-patch+json",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n  {\n    \"op\": \"replace\",\n    \"path\": \"/username\",\n    \"value\": \"TestUserName2\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/fullname\",\n    \"value\": \"TestFullName2\"\n  }\n]",
+							"raw": "{\n  \"username\": \"testUsername2\",\n  \"email\": \"test2@test.com\",\n  \"fullName\": \"test2 fullname\",\n  \"phoneNumber\": \"123456\",\n  \"language\": \"eng\",\n  \"culture\": \"eng\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -207,6 +226,40 @@
 							]
 						},
 						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update users password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "047fd4b4-8f6a-4df9-a3fe-79de4c6ac094",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\" : \"testPassword\",\r\n    \"newPassword\" : \"testPassword2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1/update-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"update-password"
+							]
+						}
 					},
 					"response": []
 				},
@@ -295,40 +348,6 @@
 									"value": null,
 									"disabled": true
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update users password",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-API-Key",
-								"value": "047fd4b4-8f6a-4df9-a3fe-79de4c6ac094",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"currentPassword\" : \"testPassword\",\r\n    \"newPassword\" : \"testPassword2\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/users/1/update-password",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"1",
-								"update-password"
 							]
 						}
 					},
